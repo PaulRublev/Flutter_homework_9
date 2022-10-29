@@ -2,22 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
 
 class CardWidget extends StatelessWidget {
-  final List<HotelPreview>? hotels;
-  final int index;
+  final HotelPreview? hotel;
   final bool isGrid;
 
   const CardWidget({
     super.key,
-    required this.index,
     required this.isGrid,
-    required this.hotels,
+    required this.hotel,
   });
-
-  toDetailPage() {}
 
   @override
   Widget build(BuildContext context) {
-    final assetImage = 'assets/images/${hotels![index].poster}';
+    final assetImage = 'assets/images/${hotel!.poster}';
 
     return Card(
       elevation: 10,
@@ -42,7 +38,7 @@ class CardWidget extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 10),
                       alignment: Alignment.topCenter,
                       height: 50,
-                      child: Text(hotels![index].name),
+                      child: Text(hotel!.name),
                     ),
                     SizedBox(
                       height: 30,
@@ -50,14 +46,16 @@ class CardWidget extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
                           shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero),
+                            borderRadius: BorderRadius.zero,
+                          ),
                         ),
                         onPressed: (() {
-                          // todo next page
-                          Navigator.of(context)
-                              .pushNamed('/detail', arguments: {
-                            'uuid': hotels![index].uuid,
-                          });
+                          Navigator.of(context).pushNamed(
+                            '/detail',
+                            arguments: {
+                              'uuid': hotel!.uuid,
+                            },
+                          );
                         }),
                         child: const SizedBox(
                           child: Text('Подробнее'),
@@ -71,18 +69,20 @@ class CardWidget extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(hotels![index].name),
+                      Text(hotel!.name),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero),
+                            borderRadius: BorderRadius.zero,
+                          ),
                         ),
                         onPressed: (() {
-                          // todo next page
-                          Navigator.of(context)
-                              .pushNamed('/detail', arguments: {
-                            'uuid': hotels![index].uuid,
-                          });
+                          Navigator.of(context).pushNamed(
+                            '/detail',
+                            arguments: {
+                              'uuid': hotel!.uuid,
+                            },
+                          );
                         }),
                         child: const Text('Подробнее'),
                       ),

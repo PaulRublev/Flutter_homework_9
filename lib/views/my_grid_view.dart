@@ -16,16 +16,16 @@ class _MyGridViewState extends State<MyGridView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: GridView.builder(
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
         itemCount: widget.hotels?.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
             child: CardWidget(
-              index: index,
               isGrid: true,
-              hotels: widget.hotels,
+              hotel: widget.hotels![index],
             ),
           );
         },

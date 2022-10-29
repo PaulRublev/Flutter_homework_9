@@ -22,9 +22,8 @@ class _MyListViewState extends State<MyListView> {
           return SizedBox(
             height: 250,
             child: CardWidget(
-              index: index,
               isGrid: false,
-              hotels: widget.hotels,
+              hotel: widget.hotels![index],
             ),
           );
         },
