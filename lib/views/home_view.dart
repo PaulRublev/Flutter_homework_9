@@ -25,7 +25,7 @@ class _HomeViewState extends State<HomeView> {
     getData();
   }
 
-  getData() async {
+  void getData() async {
     setState(() {
       isLoading = true;
     });
