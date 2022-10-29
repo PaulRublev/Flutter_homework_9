@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hotels/models/hotel.dart';
 
 class CardWidget extends StatelessWidget {
-  final List<dynamic> hotels;
+  final List<HotelPreview>? hotels;
   final int index;
   final bool isGrid;
 
@@ -16,7 +17,7 @@ class CardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final assetImage = 'assets/images/${hotels[index].poster}';
+    final assetImage = 'assets/images/${hotels![index].poster}';
 
     return Card(
       elevation: 10,
@@ -41,7 +42,7 @@ class CardWidget extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 10),
                       alignment: Alignment.topCenter,
                       height: 50,
-                      child: Text(hotels[index].name),
+                      child: Text(hotels![index].name),
                     ),
                     SizedBox(
                       height: 30,
@@ -55,7 +56,7 @@ class CardWidget extends StatelessWidget {
                           // todo next page
                           Navigator.of(context)
                               .pushNamed('/detail', arguments: {
-                            'uuid': hotels[index].uuid,
+                            'uuid': hotels![index].uuid,
                           });
                         }),
                         child: const SizedBox(
@@ -70,7 +71,7 @@ class CardWidget extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(hotels[index].name),
+                      Text(hotels![index].name),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(
@@ -80,7 +81,7 @@ class CardWidget extends StatelessWidget {
                           // todo next page
                           Navigator.of(context)
                               .pushNamed('/detail', arguments: {
-                            'uuid': hotels[index].uuid,
+                            'uuid': hotels![index].uuid,
                           });
                         }),
                         child: const Text('Подробнее'),

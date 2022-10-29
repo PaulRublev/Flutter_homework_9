@@ -6,71 +6,84 @@ import 'package:hotels/views/my_grid_view.dart';
 import 'package:hotels/views/my_list_view.dart';
 import 'package:http/http.dart' as http;
 
+enum DisplayOption {
+  listView,
+  gridView,
+}
+
 class HomeView extends StatefulWidget {
   static const String route = '/';
+
   const HomeView({Key? key}) : super(key: key);
 
   @override
-  _HomeViewState createState() => _HomeViewState();
+  State createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
-  int index = 0;
-  bool isLoading = false;
-  late List<dynamic> _hotels;
+  late final _requestOperation = _fetch();
+  var _displayOption = DisplayOption.listView;
 
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
-  void getData() async {
-    setState(() {
-      isLoading = true;
-    });
+  Future<List<HotelPreview>> _fetch() async {
     final response = await http.get(Uri(
       scheme: 'https',
       host: 'run.mocky.io',
       path: 'v3/ac888dc5-d193-4700-b12c-abb43e289301',
     ));
-    var data = json.decode(response.body);
-    _hotels = data.map((hotel) => HotelPreview.fromJson(hotel)).toList();
-    setState(() {
-      isLoading = false;
-    });
+    final data = json.decode(response.body) as List<dynamic>;
+    return data.map((hotel) => HotelPreview.fromJson(hotel)).toList();
+  }
+
+  Widget _makeLoader() {
+    return Center(
+      child: Image.asset(
+        'assets/loader.gif',
+        fit: BoxFit.cover,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () => setState(() {
-                    index = 0;
-                  }),
-              icon: const Icon(Icons.list)),
-          IconButton(
-              onPressed: () => setState(() {
-                    index = 1;
-                  }),
-              icon: const Icon(Icons.grid_on))
-        ],
-      ),
-      body: isLoading
-          ? SafeArea(
-              child: Container(
-                padding: const EdgeInsets.all(25),
-                child: Image.asset(
-                  'assets/loader.gif',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
-          : index == 0
-              ? MyListView(hotels: _hotels)
-              : MyGridView(hotels: _hotels),
-    );
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () => setState(() {
+                      _displayOption = DisplayOption.listView;
+                    }),
+                icon: const Icon(Icons.list)),
+            IconButton(
+                onPressed: () => setState(() {
+                      _displayOption = DisplayOption.gridView;
+                    }),
+                icon: const Icon(Icons.grid_on))
+          ],
+        ),
+        body: FutureBuilder<List<HotelPreview>>(
+          future: _requestOperation,
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Container();
+              case ConnectionState.waiting:
+                return _makeLoader();
+              case ConnectionState.done:
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('${snapshot.error}'),
+                  );
+                } else if (snapshot.hasData) {
+                  final hotels = snapshot.data as List<HotelPreview>;
+                  return _displayOption == DisplayOption.listView
+                      ? MyListView(hotels: hotels)
+                      : MyGridView(hotels: hotels);
+                }
+                return Container();
+              case ConnectionState.active:
+                return _makeLoader();
+            }
+          },
+        ));
   }
 }

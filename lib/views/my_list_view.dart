@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hotels/models/hotel.dart';
 import 'package:hotels/views/card_widget.dart';
 
 class MyListView extends StatefulWidget {
-  final List<dynamic> hotels;
+  final List<HotelPreview>? hotels;
 
   const MyListView({super.key, required this.hotels});
 
@@ -16,7 +17,7 @@ class _MyListViewState extends State<MyListView> {
     return SafeArea(
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        itemCount: widget.hotels.length,
+        itemCount: widget.hotels?.length,
         itemBuilder: (context, index) {
           return SizedBox(
             height: 250,
