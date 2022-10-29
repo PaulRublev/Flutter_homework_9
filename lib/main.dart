@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           default:
             return MaterialPageRoute(
                 builder: (context) => const Center(
-                      child: Text('Someting wrong with pages'),
+                      child: Text('Something wrong with pages'),
                     ));
         }
       },
