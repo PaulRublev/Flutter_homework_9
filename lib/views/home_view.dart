@@ -20,7 +20,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  late final _requestOperation = fetch(HomeView.homeUuid);
+  late final _requestOperation = fetchPreview(HomeView.homeUuid);
   var _displayOption = DisplayOption.listView;
 
   @override

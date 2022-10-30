@@ -42,25 +42,7 @@ class CardWidget extends StatelessWidget {
                     ),
                     SizedBox(
                       height: 30,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                        ),
-                        onPressed: (() {
-                          Navigator.of(context).pushNamed(
-                            '/detail',
-                            arguments: {
-                              'uuid': hotel!.uuid,
-                            },
-                          );
-                        }),
-                        child: const SizedBox(
-                          child: Text('Подробнее'),
-                        ),
-                      ),
+                      child: _makeDetailButton(isGrid, context),
                     ),
                   ],
                 )
@@ -70,27 +52,35 @@ class CardWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(hotel!.name),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                        ),
-                        onPressed: (() {
-                          Navigator.of(context).pushNamed(
-                            '/detail',
-                            arguments: {
-                              'uuid': hotel!.uuid,
-                            },
-                          );
-                        }),
-                        child: const Text('Подробнее'),
-                      ),
+                      _makeDetailButton(isGrid, context),
                     ],
                   ),
                 ),
         ],
       ),
+    );
+  }
+
+  Widget _makeDetailButton(bool isGrid, BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
+      ),
+      onPressed: (() => _onDetailPressed(context)),
+      child: isGrid
+          ? const SizedBox(child: Text('Подробнее'))
+          : const Text('Подробнее'),
+    );
+  }
+
+  void _onDetailPressed(BuildContext context) {
+    Navigator.of(context).pushNamed(
+      '/detail',
+      arguments: {
+        'uuid': hotel!.uuid,
+      },
     );
   }
 }

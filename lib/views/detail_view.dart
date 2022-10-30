@@ -1,13 +1,12 @@
-import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+import 'package:hotels/utils.dart';
 
 class DetailView extends StatefulWidget {
   static const String route = '/detail';
   final String uuid;
+
   const DetailView({super.key, required this.uuid});
 
   @override
@@ -15,125 +14,70 @@ class DetailView extends StatefulWidget {
 }
 
 class _DetailViewState extends State<DetailView> {
-  bool isLoading = false;
-  int errorNum = 0;
-  dynamic _detail;
+  late final _requestOperation = fetchDetails(widget.uuid);
 
   @override
-  void initState() {
-    super.initState();
-    getData();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder<HotelDetailed>(
+        future: _requestOperation,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Container();
+            case ConnectionState.waiting:
+              return makeLoader();
+            case ConnectionState.active:
+              return makeLoader();
+            case ConnectionState.done:
+              if (snapshot.hasError) {
+                return Scaffold(
+                  appBar: AppBar(),
+                  body: const Center(
+                    child: Text('Контент временно недоступен'),
+                  ),
+                );
+              } else if (snapshot.hasData) {
+                final detail = snapshot.data as HotelDetailed;
+                return _makeView(detail);
+              }
+              return Container();
+          }
+        },
+      ),
+    );
   }
 
-  getData() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      final response = await http.get(Uri(
-        scheme: 'https',
-        host: 'run.mocky.io',
-        path: 'v3/${widget.uuid}',
-      ));
-      var data = json.decode(response.body);
-      _detail = HotelDetailed.fromJson(data);
-    } on ClientException catch (e) {
-      errorNum = 1;
-    } on FormatException catch (e) {
-      errorNum = 2;
-    } catch (e) {
-      errorNum = 3;
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Widget switcher(int error) {
-    switch (error) {
-      case 0:
-        return SafeArea(
+  Widget _makeView(HotelDetailed detail) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(detail.name),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CarouselSlider.builder(
-                  itemCount: _detail.photos.length,
-                  itemBuilder: ((context, index, realIndex) => Image.asset(
-                        'assets/images/${_detail.photos[index]}',
-                        fit: BoxFit.fill,
-                      )),
-                  options: CarouselOptions(
-                    viewportFraction: 0.8,
-                    aspectRatio: 2,
-                  )),
+                itemCount: detail.photos.length,
+                itemBuilder: ((context, index, realIndex) => Image.asset(
+                      'assets/images/${detail.photos[index]}',
+                      fit: BoxFit.fill,
+                    )),
+                options: CarouselOptions(
+                  viewportFraction: 0.8,
+                  aspectRatio: 2,
+                ),
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        const Text(
-                          'Страна: ',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        Text(
-                          '${_detail.address.country}',
-                          style: const TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        const Text(
-                          'Город: ',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        Text(
-                          '${_detail.address.city}',
-                          style: const TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        const Text(
-                          'Улица: ',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        Text(
-                          '${_detail.address.street}',
-                          style: const TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        const Text(
-                          'Рейтинг: ',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        Text(
-                          '${_detail.rating}',
-                          style: const TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _makeAddress('Страна: ', detail.address.country),
+                  _makeAddress('Город: ', detail.address.city),
+                  _makeAddress('Улица: ', detail.address.street),
+                  _makeAddress('Рейтинг: ', detail.rating.toString()),
                 ],
               ),
               const Padding(
@@ -148,88 +92,65 @@ class _DetailViewState extends State<DetailView> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 8.0),
-                              child: Text(
-                                'Платные',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            ..._detail.services.paid.map((element) => Text(
-                                  element,
-                                  style: const TextStyle(fontSize: 13),
-                                )),
-                          ]),
-                    ),
-                    Expanded(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 8.0),
-                              child: Text(
-                                'Бесплатно',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            ..._detail.services.free.map((element) => Text(
-                                  element,
-                                  style: const TextStyle(fontSize: 13),
-                                )),
-                          ]),
-                    )
+                    _makeServices('Платные', detail.services.paid),
+                    _makeServices('Бесплатно', detail.services.free),
                   ],
                 ),
               )
             ],
           ),
-        );
-      case 1:
-        return const Center(
-          child: Text('Неполадки сети или неверный запрос'),
-        );
-      case 2:
-        return const Center(
-          child: Text('Контент временно недоступен'),
-        );
-      case 3:
-        return const Center(
-          child: Text('Данные повреждены'),
-        );
-      default:
-        return const Center(
-          child: Text('Что-то пошло не так'),
-        );
-    }
+        ),
+      ),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: isLoading
-            ? const Text('')
-            : errorNum != 0
-                ? const Text('')
-                : Text(_detail.name),
+  Widget _makeAddress(String key, String value) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Text(
+            key,
+            style: const TextStyle(
+              fontSize: 13,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
-      body: SafeArea(
-        child: isLoading
-            ? Container(
-                padding: const EdgeInsets.all(25),
-                child: Image.asset(
-                  'assets/loader.gif',
-                  fit: BoxFit.cover,
-                ),
-              )
-            : switcher(errorNum),
+    );
+  }
+
+  Widget _makeServices(String title, List<String> body) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          ...body.map(
+            (element) => Text(
+              element,
+              style: const TextStyle(
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

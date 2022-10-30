@@ -31,9 +31,10 @@ class MyApp extends StatelessWidget {
             });
           default:
             return MaterialPageRoute(
-                builder: (context) => const Center(
-                      child: Text('Something wrong with pages'),
-                    ));
+              builder: (context) => const Center(
+                child: Text('Something wrong with pages'),
+              ),
+            );
         }
       },
     );
