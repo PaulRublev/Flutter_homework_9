@@ -13,7 +13,7 @@ class HotelCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final assetImage = 'assets/images/${hotel!.poster}';
+    final imageName = 'assets/images/${hotel!.poster}';
 
     return Card(
       elevation: 10,
@@ -25,8 +25,10 @@ class HotelCardWidget extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Image.asset(
-              assetImage,
+              imageName,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  const Text('Asset not found'),
             ),
           ),
           isGrid

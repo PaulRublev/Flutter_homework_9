@@ -1,7 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
-import 'package:hotels/utils.dart';
+import 'package:hotels/utils/network.dart';
+import 'package:hotels/utils/ui.dart' as ui;
 
 class HotelDetailPage extends StatefulWidget {
   static const String route = '/detail';
@@ -14,7 +15,7 @@ class HotelDetailPage extends StatefulWidget {
 }
 
 class _HotelDetailPageState extends State<HotelDetailPage> {
-  late final _requestOperation = fetchDetails(widget.uuid);
+  late final _requestOperation = HotelsApi.fetchDetails(widget.uuid);
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +27,9 @@ class _HotelDetailPageState extends State<HotelDetailPage> {
             case ConnectionState.none:
               return Container();
             case ConnectionState.waiting:
-              return makeLoader();
+              return const ui.CustomLoader();
             case ConnectionState.active:
-              return makeLoader();
+              return const ui.CustomLoader();
             case ConnectionState.done:
               if (snapshot.hasError) {
                 return Scaffold(
@@ -39,7 +40,7 @@ class _HotelDetailPageState extends State<HotelDetailPage> {
                 );
               } else if (snapshot.hasData) {
                 final detail = snapshot.data as HotelDetailed;
-                return _makeView(detail);
+                return _DetailView(detail: detail);
               }
               return Container();
           }
@@ -47,8 +48,16 @@ class _HotelDetailPageState extends State<HotelDetailPage> {
       ),
     );
   }
+}
 
-  Widget _makeView(HotelDetailed detail) {
+class _DetailView extends StatelessWidget {
+  final HotelDetailed detail;
+  static const String assetsPath = 'assets/images/';
+
+  const _DetailView({required this.detail});
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -64,8 +73,11 @@ class _HotelDetailPageState extends State<HotelDetailPage> {
                 // todo exception
                 //
                 itemBuilder: ((context, index, realIndex) => Image.asset(
-                      'assets/images/${detail.photos[index]}',
+                      '$assetsPath${detail.photos[index]}',
                       fit: BoxFit.fill,
+                      errorBuilder: (context, error, stackTrace) => const Text(
+                        'Asset not found',
+                      ),
                     )),
                 options: CarouselOptions(
                   viewportFraction: 0.8,
@@ -76,10 +88,11 @@ class _HotelDetailPageState extends State<HotelDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _makeAddress('Страна: ', detail.address.country),
-                  _makeAddress('Город: ', detail.address.city),
-                  _makeAddress('Улица: ', detail.address.street),
-                  _makeAddress('Рейтинг: ', detail.rating.toString()),
+                  ui.Address(name: 'Страна: ', value: detail.address.country),
+                  ui.Address(name: 'Город: ', value: detail.address.city),
+                  ui.Address(name: 'Улица: ', value: detail.address.street),
+                  ui.Address(
+                      name: 'Рейтинг: ', value: detail.rating.toString()),
                 ],
               ),
               const Padding(
@@ -94,65 +107,14 @@ class _HotelDetailPageState extends State<HotelDetailPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _makeServices('Платные', detail.services.paid),
-                    _makeServices('Бесплатно', detail.services.free),
+                    ui.Services(title: 'Платные', body: detail.services.paid),
+                    ui.Services(title: 'Бесплатно', body: detail.services.free),
                   ],
                 ),
               )
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _makeAddress(String key, String value) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Text(
-            key,
-            style: const TextStyle(
-              fontSize: 13,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _makeServices(String title, List<String> body) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          ...body.map(
-            (element) => Text(
-              element,
-              style: const TextStyle(
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

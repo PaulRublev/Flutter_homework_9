@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
-import 'package:hotels/utils.dart';
+import 'package:hotels/utils/network.dart';
+import 'package:hotels/utils/ui.dart';
 import 'package:hotels/views/hotels_grid_view.dart';
 import 'package:hotels/views/hotels_list_view.dart';
 
@@ -20,7 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final _requestOperation = fetchPreview(HomePage.homeUuid);
+  late final _requestOperation = HotelsApi.fetchPreviewList(HomePage.homeUuid);
   var _displayOption = DisplayOption.listView;
 
   @override
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage> {
             case ConnectionState.none:
               return Container();
             case ConnectionState.waiting:
-              return makeLoader();
+              return const CustomLoader();
             case ConnectionState.done:
               if (snapshot.hasError) {
                 return Center(
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
               }
               return Container();
             case ConnectionState.active:
-              return makeLoader();
+              return const CustomLoader();
           }
         },
       ),
