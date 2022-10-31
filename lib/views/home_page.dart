@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
 import 'package:hotels/utils.dart';
-import 'package:hotels/views/my_grid_view.dart';
-import 'package:hotels/views/my_list_view.dart';
+import 'package:hotels/views/hotels_grid_view.dart';
+import 'package:hotels/views/hotels_list_view.dart';
 
 enum DisplayOption {
   listView,
   gridView,
 }
 
-class HomeView extends StatefulWidget {
+class HomePage extends StatefulWidget {
   static const String route = '/';
   static const String homeUuid = 'ac888dc5-d193-4700-b12c-abb43e289301';
 
-  const HomeView({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State createState() => _HomeViewState();
+  State createState() => _HomePageState();
 }
 
-class _HomeViewState extends State<HomeView> {
-  late final _requestOperation = fetchPreview(HomeView.homeUuid);
+class _HomePageState extends State<HomePage> {
+  late final _requestOperation = fetchPreview(HomePage.homeUuid);
   var _displayOption = DisplayOption.listView;
 
   @override
@@ -58,8 +58,8 @@ class _HomeViewState extends State<HomeView> {
               } else if (snapshot.hasData) {
                 final hotels = snapshot.data as List<HotelPreview>;
                 return _displayOption == DisplayOption.listView
-                    ? MyListView(hotels: hotels)
-                    : MyGridView(hotels: hotels);
+                    ? HotelsListView(hotels: hotels)
+                    : HotelsGridView(hotels: hotels);
               }
               return Container();
             case ConnectionState.active:

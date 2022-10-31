@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
-import 'package:hotels/views/card_widget.dart';
+import 'package:hotels/views/hotel_card_widget.dart';
 
-class MyListView extends StatefulWidget {
+class HotelsListView extends StatefulWidget {
   final List<HotelPreview>? hotels;
 
-  const MyListView({super.key, required this.hotels});
+  const HotelsListView({super.key, required this.hotels});
 
   @override
-  State<MyListView> createState() => _MyListViewState();
+  State<HotelsListView> createState() => _HotelsListViewState();
 }
 
-class _MyListViewState extends State<MyListView> {
+class _HotelsListViewState extends State<HotelsListView> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,7 +21,7 @@ class _MyListViewState extends State<MyListView> {
         itemBuilder: (context, index) {
           return SizedBox(
             height: 250,
-            child: CardWidget(
+            child: HotelCardWidget(
               isGrid: false,
               hotel: widget.hotels![index],
             ),

@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
 import 'package:hotels/utils.dart';
 
-class DetailView extends StatefulWidget {
+class HotelDetailPage extends StatefulWidget {
   static const String route = '/detail';
   final String uuid;
 
-  const DetailView({super.key, required this.uuid});
+  const HotelDetailPage({super.key, required this.uuid});
 
   @override
-  State<DetailView> createState() => _DetailViewState();
+  State<HotelDetailPage> createState() => _HotelDetailPageState();
 }
 
-class _DetailViewState extends State<DetailView> {
+class _HotelDetailPageState extends State<HotelDetailPage> {
   late final _requestOperation = fetchDetails(widget.uuid);
 
   @override
@@ -61,6 +61,8 @@ class _DetailViewState extends State<DetailView> {
             children: [
               CarouselSlider.builder(
                 itemCount: detail.photos.length,
+                // todo exception
+                //
                 itemBuilder: ((context, index, realIndex) => Image.asset(
                       'assets/images/${detail.photos[index]}',
                       fit: BoxFit.fill,

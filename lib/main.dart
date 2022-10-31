@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hotels/views/detail_view.dart';
-import 'package:hotels/views/home_view.dart';
+import 'package:hotels/views/detail_page.dart';
+import 'package:hotels/views/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,14 +20,14 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       onGenerateRoute: (settings) {
         switch (settings.name) {
-          case HomeView.route:
+          case HomePage.route:
             return MaterialPageRoute(builder: (context) {
-              return const HomeView();
+              return const HomePage();
             });
-          case DetailView.route:
+          case HotelDetailPage.route:
             final args = settings.arguments as Map<String, dynamic>;
             return MaterialPageRoute(builder: (context) {
-              return DetailView(uuid: args['uuid']);
+              return HotelDetailPage(uuid: args['uuid']);
             });
           default:
             return MaterialPageRoute(

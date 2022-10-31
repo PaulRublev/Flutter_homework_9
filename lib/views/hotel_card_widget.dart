@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
 
-class CardWidget extends StatelessWidget {
+class HotelCardWidget extends StatelessWidget {
   final HotelPreview? hotel;
   final bool isGrid;
 
-  const CardWidget({
+  const HotelCardWidget({
     super.key,
     required this.isGrid,
     required this.hotel,
