@@ -84,3 +84,25 @@ class Services extends StatelessWidget {
     );
   }
 }
+
+class FakeDetailButton extends StatelessWidget {
+  final bool isGrid;
+  final BuildContext context;
+
+  const FakeDetailButton(
+      {super.key, required this.isGrid, required this.context});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue,
+      alignment: Alignment.center,
+      child: isGrid
+          ? const SizedBox(child: Text('Подробнее'))
+          : const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text('Подробнее'),
+            ),
+    );
+  }
+}
