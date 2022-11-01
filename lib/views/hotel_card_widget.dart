@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
+import 'package:hotels/utils/ui.dart';
 
 class HotelCardWidget extends StatelessWidget {
   final HotelPreview? hotel;
@@ -91,28 +92,6 @@ class HotelCardWidget extends StatelessWidget {
       arguments: {
         'uuid': hotel!.uuid,
       },
-    );
-  }
-}
-
-class FakeDetailButton extends StatelessWidget {
-  final bool isGrid;
-  final BuildContext context;
-
-  const FakeDetailButton(
-      {super.key, required this.isGrid, required this.context});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      alignment: Alignment.center,
-      child: isGrid
-          ? const SizedBox(child: Text('Подробнее'))
-          : const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Подробнее'),
-            ),
     );
   }
 }

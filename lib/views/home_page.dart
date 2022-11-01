@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hotels/models/hotel.dart';
 import 'package:hotels/utils/network.dart';
 import 'package:hotels/utils/ui.dart';
-import 'package:hotels/views/hotels_grid_view.dart';
-import 'package:hotels/views/hotels_list_view.dart';
+import 'package:hotels/views/hotels_view.dart';
 
 enum DisplayOption {
   listView,
@@ -27,22 +26,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () => setState(() {
-              _displayOption = DisplayOption.listView;
-            }),
-            icon: const Icon(Icons.list),
-          ),
-          IconButton(
-            onPressed: () => setState(() {
-              _displayOption = DisplayOption.gridView;
-            }),
-            icon: const Icon(Icons.grid_on),
-          )
-        ],
-      ),
       body: FutureBuilder<List<HotelPreview>>(
         future: _requestOperation,
         builder: (context, snapshot) {
@@ -57,10 +40,31 @@ class _HomePageState extends State<HomePage> {
                   child: Text('${snapshot.error}'),
                 );
               } else if (snapshot.hasData) {
-                final hotels = snapshot.data as List<HotelPreview>;
-                return _displayOption == DisplayOption.listView
-                    ? HotelsListView(hotels: hotels)
-                    : HotelsGridView(hotels: hotels);
+                final hotels = snapshot.data;
+                return CustomScrollView(slivers: [
+                  SliverAppBar(
+                    floating: true,
+                    centerTitle: true,
+                    title: const Text('Hotels'),
+                    pinned:
+                        MediaQuery.of(context).size.width < 500 ? true : false,
+                    actions: [
+                      IconButton(
+                          onPressed: () => setState(() {
+                                _displayOption =
+                                    _displayOption == DisplayOption.gridView
+                                        ? DisplayOption.listView
+                                        : DisplayOption.gridView;
+                              }),
+                          icon: _displayOption == DisplayOption.gridView
+                              ? const Icon(Icons.list)
+                              : const Icon(Icons.grid_on))
+                    ],
+                  ),
+                  _displayOption == DisplayOption.listView
+                      ? HotelsView.toSliverList(hotels!)
+                      : HotelsView.toSliverGrid(hotels!)
+                ]);
               }
               return Container();
             case ConnectionState.active:
