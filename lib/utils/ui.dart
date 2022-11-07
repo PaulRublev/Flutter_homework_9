@@ -72,10 +72,13 @@ class Services extends StatelessWidget {
             ),
           ),
           ...body.map(
-            (element) => Text(
-              element,
-              style: const TextStyle(
-                fontSize: 13,
+            (element) => Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text(
+                element,
+                style: const TextStyle(
+                  fontSize: 13,
+                ),
               ),
             ),
           ),

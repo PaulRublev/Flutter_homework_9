@@ -70,8 +70,6 @@ class _DetailView extends StatelessWidget {
             children: [
               CarouselSlider.builder(
                 itemCount: detail.photos.length,
-                // todo exception
-                //
                 itemBuilder: ((context, index, realIndex) => Image.asset(
                       '$assetsPath${detail.photos[index]}',
                       fit: BoxFit.fill,
@@ -88,11 +86,22 @@ class _DetailView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ui.Address(name: 'Страна: ', value: detail.address.country),
-                  ui.Address(name: 'Город: ', value: detail.address.city),
-                  ui.Address(name: 'Улица: ', value: detail.address.street),
                   ui.Address(
-                      name: 'Рейтинг: ', value: detail.rating.toString()),
+                    name: 'Страна: ',
+                    value: detail.address.country,
+                  ),
+                  ui.Address(
+                    name: 'Город: ',
+                    value: detail.address.city,
+                  ),
+                  ui.Address(
+                    name: 'Улица: ',
+                    value: detail.address.street,
+                  ),
+                  ui.Address(
+                    name: 'Рейтинг: ',
+                    value: detail.rating.toString(),
+                  ),
                 ],
               ),
               const Padding(
@@ -107,8 +116,14 @@ class _DetailView extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ui.Services(title: 'Платные', body: detail.services.paid),
-                    ui.Services(title: 'Бесплатно', body: detail.services.free),
+                    ui.Services(
+                      title: 'Платные',
+                      body: detail.services.paid,
+                    ),
+                    ui.Services(
+                      title: 'Бесплатно',
+                      body: detail.services.free,
+                    ),
                   ],
                 ),
               )
