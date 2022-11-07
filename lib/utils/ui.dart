@@ -37,7 +37,7 @@ class Address extends StatelessWidget {
             ),
           ),
           Text(
-            value,
+            '$value ',
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,

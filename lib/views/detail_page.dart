@@ -82,27 +82,31 @@ class _DetailView extends StatelessWidget {
                   aspectRatio: 2,
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ui.Address(
-                    name: 'Страна: ',
-                    value: detail.address.country,
-                  ),
-                  ui.Address(
-                    name: 'Город: ',
-                    value: detail.address.city,
-                  ),
-                  ui.Address(
-                    name: 'Улица: ',
-                    value: detail.address.street,
-                  ),
-                  ui.Address(
-                    name: 'Рейтинг: ',
-                    value: detail.rating.toString(),
-                  ),
-                ],
+              SelectionArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ui.Address(
+                      name: 'Страна: ',
+                      value: detail.address.country,
+                    ),
+                    ui.Address(
+                      name: 'Город: ',
+                      value: detail.address.city,
+                    ),
+                    ui.Address(
+                      name: 'Улица: ',
+                      value: detail.address.street,
+                    ),
+                    SelectionContainer.disabled(
+                      child: ui.Address(
+                        name: 'Рейтинг: ',
+                        value: detail.rating.toString(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const Padding(
                 padding: EdgeInsets.fromLTRB(8, 18, 8, 10),
